@@ -15,12 +15,20 @@
       repo = "flake-utils";
       ref = "main";
     };
+
+    ryuki = {
+      type = "github";
+      owner = "iRyukizo";
+      repo = "nixos-config";
+      ref = "master";
+    };
   };
 
   outputs =
     { self
     , futils
     , nixpkgs
+    , ryuki
     }@inputs:
     let
       inherit (futils.lib) eachDefaultSystem;
@@ -30,6 +38,7 @@
     eachDefaultSystem (system:
     let
       pkgs = import nixpkgs { inherit system; };
+      ryukipkgs = ryuki.packages.${system};
     in
     rec {
       packages = rec {
@@ -46,6 +55,7 @@
         name = "ragbag dev shell";
         nativeBuildInputs = with pkgs; [
           go
+          ryukipkgs.gopkgsite
         ];
       };
     }
